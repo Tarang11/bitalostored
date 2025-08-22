@@ -326,6 +326,10 @@ func (zo *ZSetObject) ZRemRangeByRank(key []byte, khash uint32, start int64, sto
 
 	mk, mkCloser := base.EncodeMetaKey(key, khash)
 	defer mkCloser()
+
+	unlockKey := zo.LockKey(khash)
+	defer unlockKey()
+
 	mkv, err := zo.GetMetaData(mk)
 	if err != nil {
 		return 0, err
@@ -386,7 +390,7 @@ func (zo *ZSetObject) ZRemRangeByRank(key []byte, khash uint32, start int64, sto
 		if err = indexWb.Commit(); err != nil {
 			return 0, err
 		}
-		if err = zo.SetMetaDataSize(mk, khash, -delCnt); err != nil {
+		if err = zo.SetMetaDataSize(mk, -delCnt); err != nil {
 			return 0, err
 		}
 	}
@@ -402,6 +406,10 @@ func (zo *ZSetObject) ZRemRangeByScore(
 
 	mk, mkCloser := base.EncodeMetaKey(key, khash)
 	defer mkCloser()
+
+	unlockKey := zo.LockKey(khash)
+	defer unlockKey()
+
 	mkv, err := zo.GetMetaData(mk)
 	if err != nil {
 		return 0, err
@@ -470,7 +478,7 @@ func (zo *ZSetObject) ZRemRangeByScore(
 		if err = indexWb.Commit(); err != nil {
 			return 0, err
 		}
-		if err = zo.SetMetaDataSize(mk, khash, -delCnt); err != nil {
+		if err = zo.SetMetaDataSize(mk, -delCnt); err != nil {
 			return 0, err
 		}
 	}
@@ -484,6 +492,10 @@ func (zo *ZSetObject) ZRemRangeByLex(key []byte, khash uint32, min []byte, max [
 
 	mk, mkCloser := base.EncodeMetaKey(key, khash)
 	defer mkCloser()
+
+	unlockKey := zo.LockKey(khash)
+	defer unlockKey()
+
 	mkv, err := zo.GetMetaData(mk)
 	if err != nil {
 		return 0, err
@@ -566,7 +578,7 @@ func (zo *ZSetObject) ZRemRangeByLex(key []byte, khash uint32, min []byte, max [
 		if err = indexWb.Commit(); err != nil {
 			return 0, err
 		}
-		if err = zo.SetMetaDataSize(mk, khash, -delCnt); err != nil {
+		if err = zo.SetMetaDataSize(mk, -delCnt); err != nil {
 			return 0, err
 		}
 	}
