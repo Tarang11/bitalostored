@@ -301,6 +301,10 @@ func (bo *BaseObject) BaseDeleteDataValue(key []byte, khash uint32, args ...[]by
 
 	mk, mkCloser := EncodeMetaKey(key, khash)
 	defer mkCloser()
+
+	unlockKey := bo.LockKey(khash)
+	defer unlockKey()
+
 	mkv, err := bo.GetMetaData(mk)
 	if err != nil {
 		return 0, err
@@ -347,7 +351,7 @@ func (bo *BaseObject) BaseDeleteDataValue(key []byte, khash uint32, args ...[]by
 		if err = wb.Commit(); err != nil {
 			return 0, err
 		}
-		if err = bo.SetMetaDataSize(mk, khash, -delCnt); err != nil {
+		if err = bo.SetMetaDataSize(mk, -delCnt); err != nil {
 			return 0, err
 		}
 	}

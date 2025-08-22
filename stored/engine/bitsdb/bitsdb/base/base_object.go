@@ -121,13 +121,10 @@ func (bo *BaseObject) SetMetaData(ek []byte, mkv *MetaData) error {
 	}
 }
 
-func (bo *BaseObject) SetMetaDataSize(ek []byte, khash uint32, delta int64) error {
+func (bo *BaseObject) SetMetaDataSize(ek []byte, delta int64) error {
 	if delta == 0 {
 		return nil
 	}
-
-	unlockKey := bo.LockKey(khash)
-	defer unlockKey()
 
 	mkv, err := bo.GetMetaData(ek)
 	if err != nil {

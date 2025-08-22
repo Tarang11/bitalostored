@@ -13,7 +13,8 @@
 # limitations under the License.
 
 CGOLDFLAGS=CGO_LDFLAGS="-lstdc++ -lm -lz -lbz2 -lsnappy -llz4 -O2"
-GOARENAS=GOEXPERIMENT=arenas
+EXPERIMENT=GOEXPERIMENT=arenas,greenteagc
+DEBUG=GODEBUG=containermaxprocs=0
 GOBUILD=go build
 
 .PHONY: bitalosdashboard bitalosfe bitalosproxy bitalostored clean buildsucc
@@ -23,6 +24,7 @@ GOBUILD=go build
 all: bitalosdashboard bitalosfe bitalosproxy bitalostored buildsucc
 
 buildsucc:
+	@go version
 	@echo Build Bitalos successfully!
 
 bitalos-deps:
@@ -39,7 +41,7 @@ bitalosproxy: bitalos-deps
 	CGO_ENABLED=1 $(CGOLDFLAGS) $(GOBUILD) -o bin/bitalosproxy ./proxy/cmd
 
 bitalostored: bitalos-deps
-	CGO_ENABLED=1 $(GOARENAS) $(CGOLDFLAGS) $(GOBUILD) -o bin/bitalostored ./stored/cmd
+	CGO_ENABLED=1 $(DEBUG) $(EXPERIMENT) $(CGOLDFLAGS) $(GOBUILD) -o bin/bitalostored ./stored/cmd
 
 clean:
 	@rm -rf bin

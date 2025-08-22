@@ -145,7 +145,7 @@ func (so *SetObject) SPop(key []byte, khash uint32, count int64) ([][]byte, erro
 		if err = wb.Commit(); err != nil {
 			return nil, err
 		}
-		if err = so.SetMetaDataSize(mk, khash, -delCnt); err != nil {
+		if err = so.SetMetaDataSize(mk, -delCnt); err != nil {
 			return nil, err
 		}
 	}
